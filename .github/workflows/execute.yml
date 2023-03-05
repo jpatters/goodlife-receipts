@@ -1,0 +1,27 @@
+on: workflow_dispatch
+  
+  # schedule:
+  #   - cron: '0 0 1,15 * *'
+
+jobs:
+  execute:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.5'
+      - env:
+          FIRST_NAME: ${{ secrets.FIRST_NAME }}
+          LAST_NAME: ${{ secrets.LAST_NAME }}
+          BARCODE_NUMBER: ${{ secrets.BARCODE_NUMBER }}
+          BIRTH_MONTH: ${{ secrets.BIRTH_MONTH }}
+          BIRTH_DAY: ${{ secrets.BIRTH_DAY }}
+          BIRTH_YEAR: ${{ secrets.BIRTH_YEAR }}
+          STREET_ADDRESS: ${{ secrets.STREET_ADDRESS }}
+          CITY: ${{ secrets.CITY }}
+          PROVINCE: ${{ secrets.PROVINCE }}
+          POSTAL_CODE: ${{ secrets.POSTAL_CODE }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+        run: go run main.go
