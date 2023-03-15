@@ -15,7 +15,7 @@ import (
 
 func main() {
 	uri := "https://receipts.goodlifefitness.com/"
-	startDate := time.Now().AddDate(0, 0, -14).Format("01/02/2006")
+	startDate := time.Now().AddDate(0, 0, -21).Format("01/02/2006")
 	endDate := time.Now().AddDate(0, 0, -7).Format("01/02/2006")
 
 	resp, err := http.Get(uri)
