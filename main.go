@@ -13,10 +13,29 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+func BeginningOfMonth(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, t.Location())
+}
+
+func EndOfMonth(t time.Time) time.Time {
+	return BeginningOfMonth(t).AddDate(0, 1, 0).Add(-time.Second)
+}
+
 func main() {
 	uri := "https://receipts.goodlifefitness.com/"
-	startDate := time.Now().AddDate(0, 0, -21).Format("01/02/2006")
-	endDate := time.Now().AddDate(0, 0, -7).Format("01/02/2006")
+
+	currentDate := time.Now()
+
+	isFirstOfMonth := currentDate.AddDate(0, 0, -1).Month() != currentDate.Month()
+	var startDate, endDate time.Time
+
+	if isFirstOfMonth {
+		startDate = BeginningOfMonth(currentDate.AddDate(0, -1, 0))
+		endDate = startDate.AddDate(0, 0, 13)
+	} else {
+		startDate = BeginningOfMonth(currentDate.AddDate(0, -1, 0)).AddDate(0, 0, 14)
+		endDate = EndOfMonth(currentDate.AddDate(0, -1, 0))
+	}
 
 	resp, err := http.Get(uri)
 	if err != nil {
@@ -60,8 +79,8 @@ func main() {
 	form.Add("ctl00$Copy$email", os.Getenv("EMAIL_ADDRESS"))
 	form.Add("ctl00$Copy$email2", os.Getenv("EMAIL_ADDRESS"))
 	form.Add("ctl00$Copy$telephone", os.Getenv("PHONE_NUMBER"))
-	form.Add("ctl00$Copy$startdate", startDate)
-	form.Add("ctl00$Copy$enddate", endDate)
+	form.Add("ctl00$Copy$startdate", startDate.Format("01/02/2006"))
+	form.Add("ctl00$Copy$enddate", endDate.Format("01/02/2006"))
 	form.Add("ctl00$Copy$CheckBox1", "on")
 
 	log.Println("Sending request")
